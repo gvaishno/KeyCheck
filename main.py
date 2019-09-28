@@ -18,6 +18,7 @@ def key(id):
 		resp = json.dumps(row['testkeys'])
 		resp = resp[:-3]
 		resp = resp.replace('"', '')
+		#resp.status_code = 200
 		return resp
 	except Exception as e:
 		print(e)
@@ -29,18 +30,19 @@ def key(id):
 def not_found(error=None):
     message = {
         'status': 404,
-        'message': 'Not Found: ' + request.url,
+        'message': 'This password looks safe for now.'  # + request.url,
     }
     resp = jsonify(message)
     resp.status_code = 404
 
     return resp
 
+# Added 500 error handler as a fix to resp.status_code = 200
 @app.errorhandler(500)
 def server_error(error=None):
     message = {
-        'status': 'SAFE',
-        'message': 'Looks OK!',
+        'status': 'SAFE',   # 500 code
+        'message': 'Looks OK!',	 # Internal Server Error
     }
     resp = jsonify(message)
     resp.status_code = 200
