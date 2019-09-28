@@ -30,7 +30,7 @@ def key(id):
 def not_found(error=None):
     message = {
         'status': 404,
-        'message': 'This password looks safe for now.'  # + request.url,
+        'message': 'This password looks safe for now.',  # + request.url
     }
     resp = jsonify(message)
     resp.status_code = 404
