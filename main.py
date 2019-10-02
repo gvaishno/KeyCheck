@@ -45,11 +45,11 @@ def not_found(error=None):
 @app.errorhandler(500)
 def server_error(error=None):
     message = {
-        'status': '200',
+        'status': '404',
         'message': 'Id Not Found/ or Something Went Wrong!',
     }
     resp = jsonify(message)
-    resp.status_code = 200
+    resp.status_code = 404
 
     return resp
 
