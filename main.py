@@ -5,20 +5,25 @@ from db_config import mysql
 from flask import jsonify
 from flask import flash, request
 from werkzeug import generate_password_hash, check_password_hash
+application = app
 
-@app.route('/key/<id>')
-def key(id):
+@app.route('/')
+def indexpage():
+    return 'A Hackerfoss Project'
+
+@app.route('/range', methods=['GET'])
+def range():
+	id = request.args.get('id')
 	id = '%' + id + '%'
+	conn = mysql.connect()
+	cursor = conn.cursor(pymysql.cursors.DictCursor)
 	try:
-		conn = mysql.connect()
-		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM `testkeys` WHERE `testkeys` LIKE %s", id)
+		cursor.execute("SELECT * FROM keylist WHERE keylist LIKE %s", id)
 		row = cursor.fetchone()
 		resp = str(row)
-		resp = json.dumps(row['testkeys'])
+		resp = json.dumps(row['keylist'])
 		resp = resp[:-3]
 		resp = resp.replace('"', '')
-		#resp.status_code = 200
 		return resp
 	except Exception as e:
 		print(e)
@@ -30,19 +35,18 @@ def key(id):
 def not_found(error=None):
     message = {
         'status': 404,
-        'message': 'This password looks safe for now.',  # + request.url
+        'message': 'Not Found: ' #+ request.url,
     }
     resp = jsonify(message)
     resp.status_code = 404
 
     return resp
 
-# Added 500 error handler as a fix to resp.status_code = 200
 @app.errorhandler(500)
 def server_error(error=None):
     message = {
-        'status': 'SAFE',   # 500 code
-        'message': 'Looks OK!',	 # Internal Server Error
+        'status': '200',
+        'message': 'Id Not Found/ or Something Went Wrong!',
     }
     resp = jsonify(message)
     resp.status_code = 200
